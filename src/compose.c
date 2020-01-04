@@ -1,8 +1,7 @@
+#include <linux/input.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <linux/input.h>
 
 #include "event.h"
 

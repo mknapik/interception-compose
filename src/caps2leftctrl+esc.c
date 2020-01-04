@@ -2,10 +2,9 @@
  * Forked from
  * https://github.com/vyp/dots/blob/f6ba411/interception-tools/plugins/caps2leftctrl%2Besc.c
  */
+#include <linux/input.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include <linux/input.h>
 
 #include "event.h"
 
