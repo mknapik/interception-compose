@@ -81,8 +81,7 @@ short end_is_down = 0;
 short pgup_is_down = 0;
 short pgdw_is_down = 0;
 
-const struct input_event* const map_input(const __u16 code,
-                                           const __s32 value) {
+const struct input_event* const map_input(const __u16 code, const __s32 value) {
   switch (code) {
     case left_code:
       left_is_down = value == 0 ? 0 : 1;
@@ -132,7 +131,7 @@ int main(int argc, char* argv[]) {
         }
 
         if (!(up_is_down || down_is_down || left_is_down || right_is_down ||
-            home_is_down || end_is_down || pgup_is_down || pgdw_is_down)) {
+              home_is_down || end_is_down || pgup_is_down || pgdw_is_down)) {
           write_event(&win_down);
         }
       } else if (equal(&input, &win_up)) {
