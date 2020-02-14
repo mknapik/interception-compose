@@ -7,6 +7,12 @@
 #include "event.h"
 
 const struct input_event
+    backspace_up = {.type = EV_KEY, .code = KEY_BACKSPACE, .value = 0},
+    backspace_down = {.type = EV_KEY, .code = KEY_BACKSPACE, .value = 1},
+    backspace_repeat = {.type = EV_KEY, .code = KEY_BACKSPACE, .value = 2},
+    delete_up = {.type = EV_KEY, .code = KEY_DELETE, .value = 0},
+    delete_down = {.type = EV_KEY, .code = KEY_DELETE, .value = 1},
+    delete_repeat = {.type = EV_KEY, .code = KEY_DELETE, .value = 2},
     home_up = {.type = EV_KEY, .code = KEY_HOME, .value = 0},
     home_down = {.type = EV_KEY, .code = KEY_HOME, .value = 1},
     home_repeat = {.type = EV_KEY, .code = KEY_HOME, .value = 2},
@@ -46,6 +52,9 @@ const struct input_event* const end[] = {&end_up, &end_down, &end_repeat};
 const struct input_event* const pgdw[] = {&pgdw_up, &pgdw_down, &pgdw_repeat};
 const struct input_event* const pgup[] = {&pgup_up, &pgup_down, &pgup_repeat};
 
+const struct input_event* const backspace[] = {&backspace_up, &backspace_down, &backspace_repeat};
+const struct input_event* const deletekey[] = {&delete_up, &delete_down, &delete_repeat};
+
 const __u16 left_code = KEY_J;
 const __u16 down_code = KEY_K;
 const __u16 up_code = KEY_I;
@@ -55,6 +64,10 @@ const __u16 home_code = KEY_M;
 const __u16 end_code = KEY_COMMA;
 const __u16 pgdw_code = KEY_U;
 const __u16 pgup_code = KEY_O;
+
+const __u16 backspace_code = KEY_H;
+const __u16 delete_code = KEY_SEMICOLON;
+
 
 bool is_mapped(__u16 code) {
   switch (code) {
@@ -66,6 +79,8 @@ bool is_mapped(__u16 code) {
     case end_code:
     case pgup_code:
     case pgdw_code:
+    case backspace_code:
+    case delete_code:
       return true;
     default:
       return false;
@@ -80,6 +95,8 @@ short home_is_down = 0;
 short end_is_down = 0;
 short pgup_is_down = 0;
 short pgdw_is_down = 0;
+short backspace_is_down = 0;
+short delete_is_down = 0;
 
 const struct input_event* const map_input(const __u16 code, const __s32 value) {
   switch (code) {
@@ -107,6 +124,12 @@ const struct input_event* const map_input(const __u16 code, const __s32 value) {
     case pgdw_code:
       pgdw_is_down = value == 0 ? 0 : 1;
       return pgdw[value];
+    case backspace_code:
+      backspace_is_down = value == 0 ? 0 : 1;
+      return backspace[value];
+    case delete_code:
+      delete_is_down = value == 0 ? 0 : 1;
+      return deletekey[value];
     default:
       return nullptr;
   }
@@ -131,7 +154,8 @@ int main(int argc, char* argv[]) {
         }
 
         if (!(up_is_down || down_is_down || left_is_down || right_is_down ||
-              home_is_down || end_is_down || pgup_is_down || pgdw_is_down)) {
+              home_is_down || end_is_down || pgup_is_down || pgdw_is_down ||
+              backspace_is_down || delete_is_down)) {
           write_event(&win_down);
         }
       } else if (equal(&input, &win_up)) {
@@ -168,6 +192,14 @@ int main(int argc, char* argv[]) {
         if (pgdw_is_down) {
           pgdw_is_down = 0;
           write_event(&pgdw_up);
+        }
+        if (backspace_is_down) {
+          backspace_is_down = 0;
+          write_event(&backspace_up);
+        }
+        if (delete_is_down) {
+          delete_is_down = 0;
+          write_event(&delete_up);
         }
         write_event(&win_up);
       } else {
